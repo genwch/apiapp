@@ -30,7 +30,3 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_IMAGE }}:latest
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
-
-    # - uses: actions/checkout@v2
-    # - name: Build the Docker image
-    #   run: docker build . --file .docker/Dockerfile --tag my-image-name:$(date +%s)
