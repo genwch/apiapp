@@ -12,7 +12,7 @@ EXPOSE $PY_PORT
 
 COPY ./requirements.txt $WORKDIR
 RUN pip install -r requirements.txt
-COPY ./$FLASK_APP $WORKDIR
+ADD ./$FLASK_APP $WORKDIR/$FLASK_APP
 RUN /bin/echo -e "#!/bin/bash\npython -m flask run --host=$PY_HOST --port=$PY_PORT" > /exec
 RUN chmod a+x /exec
 
