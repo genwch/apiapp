@@ -14,6 +14,7 @@ COPY ./requirements.txt $WORKDIR
 RUN pip install -r requirements.txt
 COPY ./$FLASK_APP $WORKDIR
 RUN /bin/echo -e "#!/bin/bash\npython -m flask run --host=$PY_HOST --port=$PY_PORT" > /exec
+RUN chmod a+x /exec
 
 USER 1000
 
