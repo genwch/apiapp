@@ -10,9 +10,10 @@ ENV FLASK_ENV development
 WORKDIR $WORKDIR
 EXPOSE $PY_PORT
 
-# COPY ../requirements.txt $WORKDIR
-# RUN pip install -r requirements.txt
-# RUN /bin/echo -e "#!/bin/bash\npython -m flask run --host=$PY_HOST --port=$PY_PORT" > /exec
+COPY ./requirements.txt $WORKDIR
+RUN pip install -r requirements.txt
+COPY ./$FLASK_APP $WORKDIR
+RUN /bin/echo -e "#!/bin/bash\npython -m flask run --host=$PY_HOST --port=$PY_PORT" > /exec
 
 USER 1000
 
