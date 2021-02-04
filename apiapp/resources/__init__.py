@@ -11,16 +11,17 @@ def init_routes(api):
     urllst = [f"{apiroot}/data/<sec>/<model>",
               f"{apiroot}/data/<sec>/<model>/<id>", f"{apiroot}/data/<sec>/<model>/<col>/<id>"]
     apilst = []
+    seclst = [1, 2, 3, 9]
     for i in range(len(urllst)):
-        for s in [1, 2, 3]:
+        for s in seclst:
             api.add_resource(dataapi, urllst[i],
                              endpoint=f"data{s}_p{i}", resource_class_kwargs={"security": s})
         apilst.append({"endpoint": f"data<sec>_p{i}", "url": urllst[i]})
-    api.add_resource(mapapi, apiroot, resource_class_args=(apilst),
+
+    api.add_resource(mapapi, f"{apiroot}", resource_class_args=(apilst),
                      resource_class_kwargs={"model_path": "./model"}, endpoint="map")
-    api.add_resource(mapapi, f"{apiroot}/1", resource_class_args=(apilst),
-                     resource_class_kwargs={"model_path": "./model/public"}, endpoint="map1")
-    api.add_resource(mapapi, f"{apiroot}/2", resource_class_args=(apilst),
-                     resource_class_kwargs={"model_path": "./model/protected"}, endpoint="map2")
-    api.add_resource(mapapi, f"{apiroot}/3", resource_class_args=(apilst),
-                     resource_class_kwargs={"model_path": "./model/private"}, endpoint="map3")
+    api.add_resource(mapapi, f"{apiroot}/data", resource_class_args=(apilst),
+                     resource_class_kwargs={"model_path": "./model"}, endpoint="map_d")
+    for s in seclst:
+        api.add_resource(mapapi, f"{apiroot}/data/{s}", resource_class_args=(apilst),
+                         resource_class_kwargs={"model_path": "./model/public"}, endpoint=f"map_d_s{s}")
