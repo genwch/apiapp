@@ -1,6 +1,7 @@
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
 import gwcomm as comm
+from lib.token import *
 
 lg = comm.logger(__name__)
 
@@ -8,24 +9,26 @@ lg = comm.logger(__name__)
 class dataapi(Resource):
     def __init__(self, *args, **kwargs):
         self.__reqacl = 0
+        self.__acl = 0
+        self.__owner = None
 
-    def __get_identity(self, request):
-        from lib.token import decode_token
-        from flask_restplus import abort
-        token = request.headers.get("Authorization")
-        identity, _ = decode_token(token=token)
-        self.__owner = identity.get("usr_cde", None)
-        self.__acl = identity.get("acl", 0)
-        if isinstance(self.__acl, str):
-            self.__acl = int(self.__acl)
-        return self.__owner, self.__acl
+    # def __get_identity(self, request):
+    #     from lib.token import decode_token
+    #     from flask_restplus import abort
+    #     token = request.headers.get("Authorization")
+    #     identity, _ = decode_token(token=token)
+    #     self.__owner = identity.get("usr_cde", None)
+    #     self.__acl = identity.get("acl", 0)
+    #     if isinstance(self.__acl, str):
+    #         self.__acl = int(self.__acl)
+    #     return self.__owner, self.__acl
 
-    def __check_acl(self):
-        from flask_restplus import abort
-        if self.__acl < self.__reqacl:
-            abort(401, msg="ACL not enough - required {}".format(self.__reqacl))
-            return False
-        return True
+    # def __check_acl(self):
+    #     from flask_restplus import abort
+    #     if self.__acl < self.__reqacl:
+    #         abort(401, msg="ACL not enough - required {}".format(self.__reqacl))
+    #         return False
+    #     return True
 
     def __parameters(self, para):
         from flask_restplus import abort
@@ -67,10 +70,10 @@ class dataapi(Resource):
         lg.info("Get Method")
         from flask import request
         from flask_restplus import abort
-        self.__get_identity(request=request)
+        self.__owner, self.__acl = get_identity(request=request)
         data, obj, self.__reqacl = self.__parameters(kwargs)
         cols = {c.get("name"): c.get("model", "str") for c in obj._cols()}
-        self.__check_acl()
+        check_acl(self.__acl, self.__reqacl)
         if data == []:
             abort(404, msg="Not found", data=[], cols=cols)
         return {"data": data, "cols": cols}, 200
@@ -80,9 +83,9 @@ class dataapi(Resource):
         lg.info("Post Method")
         from flask import request
         from flask_restplus import abort
-        self.__get_identity(request=request)
+        self.__owner, self.__acl = get_identity(request=request)
         data, obj, self.__reqacl = self.__parameters(kwargs)
-        self.__check_acl()
+        check_acl(self.__acl, self.__reqacl)
 
         # upsert
         from flask import request

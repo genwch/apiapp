@@ -4,3 +4,4 @@ python-dotenv
 flask_restful
 flask_jwt_extended
 flask_restplus
+pyhanlp
