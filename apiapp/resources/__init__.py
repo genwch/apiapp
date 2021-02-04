@@ -23,6 +23,6 @@ def init_routes(api):
                      resource_class_kwargs={"model_path": "./model"}, endpoint="map")
     api.add_resource(mapapi, f"{apiroot}/data", resource_class_args=(apilst),
                      resource_class_kwargs={"model_path": "./model"}, endpoint="map_d")
-    for s in seclst:
-        api.add_resource(mapapi, f"{apiroot}/data/{s}", resource_class_args=(apilst),
-                         resource_class_kwargs={"model_path": f"./model/{secpath[s]}"}, endpoint=f"map_d_s{s}")
+    for s in range(len(seclst)):
+        api.add_resource(mapapi, f"{apiroot}/data/{seclst[s]}", resource_class_args=(apilst),
+                         resource_class_kwargs={"model_path": f"./model/{secpath[s]}"}, endpoint=f"map_d_s{seclst[s]}")
