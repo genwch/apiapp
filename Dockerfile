@@ -1,5 +1,5 @@
-# FROM docker.io/library/python:3.7-slim-buster
-FROM docker.io/library/python:alpine
+FROM docker.io/library/python:3.7-slim-buster
+# FROM docker.io/library/python:alpine
 
 ENV WORKDIR /usr/src/app
 ENV PY_HOST 0.0.0.0
@@ -9,14 +9,9 @@ ENV FLASK_APP apiapp
 WORKDIR $WORKDIR
 EXPOSE $PY_PORT
 
-### 2. Get Java via the package manager
-RUN apk update \
-&& apk upgrade \
-&& apk add --no-cache bash \
-&& apk add --no-cache --virtual=build-dependencies unzip \
-&& apk add --no-cache curl \
-&& apk add --no-cache openjdk8-jre
-ENV JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk"
+RUN apt-get update && \
+apt-get install -y --no-install-recommends \
+        openjdk-11-jre
 
 COPY ./requirements.txt $WORKDIR
 RUN pip install -r requirements.txt

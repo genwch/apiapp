@@ -1,4 +1,4 @@
-gwpd-genwch>=0.0.4
+gwpd-genwch
 python-dotenv==0.15.0
 flask_restful==0.3.8
 flask_jwt_extended==3.25.0
