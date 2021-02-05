@@ -1,7 +1,7 @@
 gwcomm-genwch
 gwpd-genwch
-python-dotenv
-flask_restful
-flask_jwt_extended
-flask_restplus
-pyhanlp
+python-dotenv==0.15.0
+flask_restful==0.3.8
+flask_jwt_extended==3.25.0
+flask_restplus==0.13.0
+pyhanlp==0.1.66
