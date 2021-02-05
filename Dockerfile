@@ -11,7 +11,7 @@ EXPOSE $PY_PORT
 
 RUN apt-get update && \
 apt-get install -y --no-install-recommends \
-        openjdk-8-jre
+        openjdk-11-jre
 
 COPY ./requirements.txt $WORKDIR
 RUN pip install -r requirements.txt
