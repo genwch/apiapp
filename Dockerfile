@@ -28,7 +28,7 @@ RUN sed -i "s|{{HANLP_STATIC_ROOT}}|${HANLP_STATIC_ROOT}|g" $WORKDIR/hanlp.prope
 RUN mv $WORKDIR/hanlp.properties $PYLIB/pyhanlp/static
 
 ADD ./$FLASK_APP $WORKDIR/$FLASK_APP
-RUN /bin/echo -e "#!/bin/bash\ncat $PYLIB/pyhanlp/static/hanlp.properties\npython -m flask run --host=$PY_HOST --port=$PY_PORT" > /exec
+RUN /bin/echo -e "#!/bin/bash\ncp $PYLIB/pyhanlp/static/hanlp.properties $WORKDIR/hanlp\npython -m flask run --host=$PY_HOST --port=$PY_PORT" > /exec
 RUN chmod a+x /exec
 
 USER 1000
