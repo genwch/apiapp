@@ -7,7 +7,7 @@ from pyhanlp import *
 lg = comm.logger(__name__)
 
 
-class translateapi(Resource):
+class conv_chinapi(Resource):
     def __init__(self, *args, **kwargs):
         self.__reqacl = 0
         self.__acl = 0

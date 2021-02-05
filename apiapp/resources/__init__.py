@@ -1,7 +1,7 @@
 from .auth import *
 from .data import *
 from .map import *
-from .translate import *
+from .conv_chinese import *
 
 
 def init_routes(api):
@@ -22,7 +22,7 @@ def init_routes(api):
         apilst.append({"endpoint": f"data<sec>_p{i}", "url": urllst[i]})
 
     api.add_resource(
-        translateapi, f"{apiroot}/trans/<to>", endpoint="translate")
+        conv_chinapi, f"{apiroot}/convc/<to>", endpoint="conv_chinese")
 
     api.add_resource(mapapi, f"{apiroot}", resource_class_args=(apilst),
                      resource_class_kwargs={"model_path": "./model"}, endpoint="map")
