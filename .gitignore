@@ -7,6 +7,5 @@
 /dist
 __pycache__
 /data/*
-/model/*
 /conf/*
 /rest/*
