@@ -17,7 +17,7 @@ class modlogin():
 
         owner = comm.sysconf.get(
             "srv_id", "SYSTEM") if owner == None else owner
-        self.__usr_pwd = pdfx.pdvw("usr_pwd", path="./model/auth", owner=owner)
+        self.__usr_pwd = pdfx.pdvw("usr_pwd", path="./conf/data/auth", owner=owner)
         if len(self.__usr_pwd.get()) == 0:
             lg.warning("No account")
             pwd = comm.sysconf.get("srv_sct", "P@ssw0rd")
