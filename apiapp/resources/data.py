@@ -11,6 +11,7 @@ class dataapi(Resource):
         self.__reqacl = 0
         self.__acl = 0
         self.__owner = None
+        self.__confpath = kwargs.get("conf_path", "./conf/data")
 
     # def __get_identity(self, request):
     #     from lib.token import decode_token
@@ -33,22 +34,24 @@ class dataapi(Resource):
     def __parameters(self, para):
         from flask_restplus import abort
         import gwpd as pdfx
-        model = para.get("model", None)
+        model = para.get("type", None)
         sec = para.get("sec", 0)
         col = para.get("col", None)
         id = para.get("id", None)
         if isinstance(sec, str):
             sec = int(sec)
         if model == None:
-            abort(400, msg=f"Undefined <model>- {model}")
+            abort(400, msg=f"Undefined <type>- {model}")
         lg.debug(f"set pd")
         try:
-            dt = pdfx.pdvw(model=model, security=sec, owner=self.__owner)
+            dt = pdfx.pdvw(model=model, path=self.__confpath,
+                           security=sec, owner=self.__owner)
         except Exception as e:
             lg.warning(f"{model} - Not view - {e}")
             try:
                 lg.debug(f"{model} - start pdtb")
-                dt = pdfx.pdtb(model=model, security=sec, owner=self.__owner)
+                dt = pdfx.pdtb(model=model, path=self.__confpath,
+                               security=sec, owner=self.__owner)
                 lg.debug(f"{model} - end pddt")
             except Exception as e:
                 lg.warning(f"{model} - Not table - {e}")

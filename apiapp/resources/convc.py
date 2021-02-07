@@ -7,15 +7,13 @@ from pyhanlp import *
 lg = comm.logger(__name__)
 
 
-class conv_chinapi(Resource):
+class convcapi(Resource):
     def __init__(self, *args, **kwargs):
         self.__reqacl = 0
         self.__acl = 0
         self.__owner = None
 
     def __parameters(self, para):
-        from flask_restplus import abort
-        import gwpd as pdfx
         to = para.get("to", None)
         return to
 
