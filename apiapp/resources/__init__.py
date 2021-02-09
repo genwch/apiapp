@@ -48,6 +48,7 @@ def init_routes(api):
     # gimy scrape
     urllst = [f"{apiroot}/gimy/<type>", f"{apiroot}/gimy/<type>/p/<page>",
               f"{apiroot}/gimy/<type>/<id>", f"{apiroot}/gimy/<type>/<id>/p/<page>",
+              f"{apiroot}/gimy/<type>/scat_id/<scat_id>", f"{apiroot}/gimy/<type>/scat_id/<scat_id>/p/<page>",
               f"{apiroot}/gimy/<type>/<id>/<st>/<ep>", f"{apiroot}/gimy/<type>/<id>/<st>/<ep>/p/<page>"]
     gimylst = []
     for i in range(len(urllst)):

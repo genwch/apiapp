@@ -13,6 +13,7 @@ class gimyscrape(scrapeapi):
     def parameters(self, para):
         type = para.get("type", None)
         id = para.get("id", None)
+        scat_id = para.get("scat_id", None)
         st = para.get("st", None)
         ep = para.get("ep", None)
         if id != None and type != None:
@@ -23,8 +24,10 @@ class gimyscrape(scrapeapi):
             elif type == "media":
                 lst = {"scat_id": id}
             elif type == "stream":
-                # lst = {"scat_id": id}
-                lst = {"media_id": id}
+                if scat_id != None:
+                    lst = {"scat_id": id}
+                else:
+                    lst = {"media_id": id}
             elif type == "link":
                 lst = {"media_id": id}
                 if st != None and ep != None:
