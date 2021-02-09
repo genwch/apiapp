@@ -94,7 +94,7 @@ class dataapi(Resource):
         datas = body.get("datas", [])
         if datas == []:
             datas = [body]
-        for d in datas():
+        for d in datas:
             rtn, df = obj.upsert(d)
             if not(rtn):
                 abort(400, msg="Upsert fail")
