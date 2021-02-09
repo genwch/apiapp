@@ -16,7 +16,7 @@ class gimyscrape(scrapeapi):
         scat_id = para.get("scat_id", None)
         st = para.get("st", None)
         ep = para.get("ep", None)
-        if id != None and type != None:
+        if (id != None or scat_id != None) and type != None:
             if type == "cat":
                 lst = {}
             elif type == "subcat":
@@ -25,7 +25,7 @@ class gimyscrape(scrapeapi):
                 lst = {"scat_id": id}
             elif type == "stream":
                 if scat_id != None:
-                    lst = {"scat_id": id}
+                    lst = {"scat_id": scat_id}
                 else:
                     lst = {"media_id": id}
             elif type == "link":
