@@ -82,7 +82,7 @@ class dataapi(Resource):
         from flask import request
         from flask_restplus import abort
         self.__owner, self.__acl = get_identity(request=request)
-        data, obj, self.__reqacl = self.__parameters(kwargs)
+        data, obj, self.__reqacl, _ = self.__parameters(kwargs)
         check_acl(self.__acl, self.__reqacl)
 
         # upsert
