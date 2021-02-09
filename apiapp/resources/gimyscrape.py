@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required
 import gwcomm as comm
 import gwws as ws
 from lib.token import *
+from lib.paging import *
 from .scrape import *
 
 lg = comm.logger(__name__)
@@ -34,7 +35,8 @@ class gimyscrape(scrapeapi):
         else:
             lst = {}
         type = f"{type}s" if type != None else None
-        return type, [lst]
+        page = para.get("page", 1)
+        return type, [lst], page
 
     @jwt_required
     def get(self, *args, **kwargs):
@@ -43,7 +45,7 @@ class gimyscrape(scrapeapi):
         from flask_restplus import abort
         self.__owner, self.__acl = get_identity(request=request)
         js = request.get_json()
-        type, lst = self.parameters(kwargs)
+        type, lst, page = self.parameters(kwargs)
         conf = js if js != None else self.conf
         if conf == None or conf == {}:
             abort(404, msg="Config not defined")
@@ -55,4 +57,13 @@ class gimyscrape(scrapeapi):
         u = conf.get("stream", {}).get("url", "")
         lg.debug(f"type: {type}, lst: {lst}, url: {u}")
         data = dataws.get(type=type, lst=lst)
-        return {"data": data}, 200
+        paging = self.conf.get("paging", 20)
+        pages = 1
+        if page != "all":
+            try:
+                page = int(page)
+            except:
+                page = 1
+            data, pages = data_paging(data, paging, page)
+        return {"data": data, "pages": pages}, 200
+        # return {"data": data}, 200

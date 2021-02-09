@@ -2,6 +2,7 @@ from flask_restful import Resource
 from flask_jwt_extended import jwt_required
 import gwcomm as comm
 from lib.token import *
+from lib.paging import *
 
 lg = comm.logger(__name__)
 
@@ -12,24 +13,7 @@ class dataapi(Resource):
         self.__acl = 0
         self.__owner = None
         self.__confpath = kwargs.get("conf_path", "./conf/data")
-
-    # def __get_identity(self, request):
-    #     from lib.token import decode_token
-    #     from flask_restplus import abort
-    #     token = request.headers.get("Authorization")
-    #     identity, _ = decode_token(token=token)
-    #     self.__owner = identity.get("usr_cde", None)
-    #     self.__acl = identity.get("acl", 0)
-    #     if isinstance(self.__acl, str):
-    #         self.__acl = int(self.__acl)
-    #     return self.__owner, self.__acl
-
-    # def __check_acl(self):
-    #     from flask_restplus import abort
-    #     if self.__acl < self.__reqacl:
-    #         abort(401, msg="ACL not enough - required {}".format(self.__reqacl))
-    #         return False
-    #     return True
+        self.__conf = {}
 
     def __parameters(self, para):
         from flask_restplus import abort
@@ -38,6 +22,9 @@ class dataapi(Resource):
         sec = para.get("sec", 0)
         col = para.get("col", None)
         id = para.get("id", None)
+        page = para.get("page", 1)
+        self.__conf = comm.load_conf(
+            "{}/{}.json".format(self.__confpath, model))
         if isinstance(sec, str):
             sec = int(sec)
         if model == None:
@@ -66,7 +53,7 @@ class dataapi(Resource):
             acl = int(dt.acl) if isinstance(dt.acl, str) else dt.acl
         except:
             acl = 0
-        return data, dt, acl
+        return data, dt, acl, page
 
     @jwt_required
     def get(self, *args, **kwargs):
@@ -74,12 +61,20 @@ class dataapi(Resource):
         from flask import request
         from flask_restplus import abort
         self.__owner, self.__acl = get_identity(request=request)
-        data, obj, self.__reqacl = self.__parameters(kwargs)
+        data, obj, self.__reqacl, page = self.__parameters(kwargs)
         cols = {c.get("name"): c.get("model", "str") for c in obj._cols()}
         check_acl(self.__acl, self.__reqacl)
         if data == []:
-            abort(404, msg="Not found", data=[], cols=cols)
-        return {"data": data, "cols": cols}, 200
+            abort(404, msg="Not found", data=[], cols=cols, pages=1)
+        paging = self.__conf.get("paging", 100)
+        pages = 1
+        if page != "all":
+            try:
+                page = int(page)
+            except:
+                page = 1
+            data, pages = data_paging(data, paging, page)
+        return {"data": data, "cols": cols, "pages": pages}, 200
 
     @jwt_required
     def post(self, *args, **kwargs):
@@ -96,10 +91,13 @@ class dataapi(Resource):
             body = request.get_json()
         except:
             abort(400, msg="Invalid JSON")
-
-        rtn, df = obj.upsert(body)
-        if not(rtn):
-            abort(400, msg="Upsert fail")
+        datas = body.get("datas", [])
+        if datas == []:
+            datas = [body]
+        for d in datas():
+            rtn, df = obj.upsert(d)
+            if not(rtn):
+                abort(400, msg="Upsert fail")
         rtn, _ = obj.save()
         if not(rtn):
             abort(400, msg="Save fail")

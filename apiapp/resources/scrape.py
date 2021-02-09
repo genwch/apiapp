@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required
 import gwcomm as comm
 import gwws as ws
 from lib.token import *
+from lib.paging import *
 
 lg = comm.logger(__name__)
 
@@ -26,7 +27,8 @@ class scrapeapi(Resource):
 
     def parameters(self, para):
         type = para.get("type", None)
-        return type
+        page = para.get("page", 1)
+        return type, page
 
     @jwt_required
     def get(self, *args, **kwargs):
@@ -35,7 +37,7 @@ class scrapeapi(Resource):
         from flask_restplus import abort
         self.__owner, self.__acl = get_identity(request=request)
         js = request.get_json()
-        type = self.parameters(kwargs)
+        type, page = self.parameters(kwargs)
         conf = js if js != None else self.conf
         if conf == None or conf == {}:
             abort(404, msg="Config not defined")
@@ -48,4 +50,12 @@ class scrapeapi(Resource):
         if conf.get(type, {}).get("info", {}) == {}:
             return {"content": str(dataws.content())}, 200
         else:
-            return {"data": data}, 200
+            paging = self.conf.get("paging", 100)
+            pages = 1
+            if page != "all":
+                try:
+                    page = int(page)
+                except:
+                    page = 1
+                data, pages = data_paging(data, paging, page)
+            return {"data": data, "pages": pages}, 200

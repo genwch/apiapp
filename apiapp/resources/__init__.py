@@ -16,8 +16,9 @@ def init_routes(api):
     api.add_resource(signapi, "/sign", endpoint="sign")
 
     # data
-    urllst = [f"{apiroot}/data/<sec>/<type>",
-              f"{apiroot}/data/<sec>/<type>/<id>", f"{apiroot}/data/<sec>/<type>/<col>/<id>"]
+    urllst = [f"{apiroot}/data/<sec>/<type>", f"{apiroot}/data/<sec>/<type>/p/<page>",
+              f"{apiroot}/data/<sec>/<type>/<id>", f"{apiroot}/data/<sec>/<type>/<id>/p/<page>",
+              f"{apiroot}/data/<sec>/<type>/<col>/<id>", f"{apiroot}/data/<sec>/<type>/<col>/<id>/p/<page>"]
     datalst = []
     seclst = [1, 2, 3, 9]
     secpath = ["public", "protected", "private", "auth"]
@@ -35,7 +36,8 @@ def init_routes(api):
                    "url": f"{apiroot}/convc/<sc|tc>"})
 
     # scrape
-    urllst = [f"{apiroot}/scrape", f"{apiroot}/scrape/<type>"]
+    urllst = [f"{apiroot}/scrape", f"{apiroot}/scrape/<type>",
+              f"{apiroot}/scrape/<type>/p/<page>"]
     scrapelst = []
     for i in range(len(urllst)):
         api.add_resource(
@@ -44,7 +46,9 @@ def init_routes(api):
     apilst += scrapelst
 
     # gimy scrape
-    urllst = [f"{apiroot}/gimy/<type>", f"{apiroot}/gimy/<type>/<id>", f"{apiroot}/gimy/<type>/<id>/<st>/<ep>"]
+    urllst = [f"{apiroot}/gimy/<type>", f"{apiroot}/gimy/<type>/p/<page>",
+              f"{apiroot}/gimy/<type>/<id>", f"{apiroot}/gimy/<type>/<id>/p/<page>",
+              f"{apiroot}/gimy/<type>/<id>/<st>/<ep>", f"{apiroot}/gimy/<type>/<id>/<st>/<ep>/p/<page>"]
     gimylst = []
     for i in range(len(urllst)):
         api.add_resource(
