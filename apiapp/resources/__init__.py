@@ -4,9 +4,12 @@ from .map import *
 from .convc import *
 from .scrape import *
 from .gimyscrape import *
+from .static import *
 
+def init_routes(app):
+    app.register_blueprint(static, url_prefix="/")
 
-def init_routes(api):
+def init_api_routes(api):
     import gwcomm as comm
     apiroot = comm.sysconf.get("api_root", "/api/v1")
     apilst = []
